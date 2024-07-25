@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const productSlice = createSlice({
-    name: 'products',
+  name: 'products',
   initialState: {
     data: [
       {
@@ -14,7 +14,7 @@ const productSlice = createSlice({
         stock: 94,
         brand: "Apple",
         category: "smartphones",
-        thumbnail: "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+        thumbnail: "https://picsum.photos/200/300?random=1",
         images: [
           "https://i.dummyjson.com/data/products/1/1.jpg",
           "https://i.dummyjson.com/data/products/1/2.jpg",
@@ -22,6 +22,7 @@ const productSlice = createSlice({
           "https://i.dummyjson.com/data/products/1/4.jpg",
           "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
         ],
+        quantity: 1,
       },
       {
         id: 2,
@@ -34,13 +35,14 @@ const productSlice = createSlice({
         stock: 34,
         brand: "Apple",
         category: "smartphones",
-        thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
+        thumbnail: "https://picsum.photos/200/300?random=2",
         images: [
           "https://i.dummyjson.com/data/products/2/1.jpg",
           "https://i.dummyjson.com/data/products/2/2.jpg",
           "https://i.dummyjson.com/data/products/2/3.jpg",
           "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
         ],
+        quantity: 1,
       },
       {
         id: 3,
@@ -55,6 +57,7 @@ const productSlice = createSlice({
         category: "smartphones",
         thumbnail: "https://i.dummyjson.com/data/products/3/thumbnail.jpg",
         images: ["https://i.dummyjson.com/data/products/3/1.jpg"],
+        quantity: 1,
       },
       {
         id: 4,
@@ -74,6 +77,7 @@ const productSlice = createSlice({
           "https://i.dummyjson.com/data/products/4/4.jpg",
           "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
         ],
+        quantity: 1,
       },
       {
         id: 5,
@@ -92,13 +96,14 @@ const productSlice = createSlice({
           "https://i.dummyjson.com/data/products/5/2.jpg",
           "https://i.dummyjson.com/data/products/5/3.jpg",
         ],
+        quantity: 1,
       },
     ],
     status: "idle",
     error: null,
   },
   reducers: {
-    fetchProductStart: (state, action) => {
+    fetchProductStart: (state) => {
       state.status = "loading";
     },
     fetchProductSuccess: (state, action) => {
@@ -109,9 +114,35 @@ const productSlice = createSlice({
       state.status = "Failure";
       state.error = action.payload;
     },
-  },
-});
-
-export const { fetchProductStart, fetchProductSuccess, fetchProductFailure } =
-  productSlice.actions;
+    increaseQuantity: (state, action) => {
+        const product = state.data.find((item) => item.id === action.payload);
+        if (product && product.quantity < product.stock) {
+          product.quantity += 1;
+          state.totalQuantity += 1;
+          state.totalAmount += product.price;
+        }
+      },
+      decreaseQuantity: (state, action) => {
+        const product = state.data.find((item) => item.id === action.payload);
+        if (product && product.quantity > 1) {
+          product.quantity -= 1;
+          state.totalQuantity -= 1;
+          state.totalAmount -= product.price;
+        }
+      },
+      updateTotals: (state) => {
+        state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
+        state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
+      }
+    },
+  });
+  
+  export const {
+    fetchProductStart,
+    fetchProductSuccess,
+    fetchProductFailure,
+    increaseQuantity,
+    decreaseQuantity,
+    updateTotals,
+  } = productSlice.actions;
 export default productSlice.reducer;

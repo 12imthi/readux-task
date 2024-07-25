@@ -1,23 +1,41 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import Card from '../pages/Card';
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { increaseQuantity, decreaseQuantity, updateTotals } from "../feature/ProductSlice";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ProductCard from './ProductCard'; // Import the new ProductCard component
 
 const ProductDisplay = () => {
-  const { data, status, error } = useSelector(state => state.prodReducer);
+  const products = useSelector((state) => state.products.data);
+  const totalQuantity = useSelector((state) => state.products.totalQuantity);
+  const totalAmount = useSelector((state) => state.products.totalAmount);
+  const dispatch = useDispatch();
 
-  if (status === 'Loading') {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    dispatch(updateTotals());
+  }, [products, dispatch]);
 
-  if (status === 'Failure') {
-    return <p>Error: {error}</p>;
-  }
+  const handleIncrease = (id) => {
+    dispatch(increaseQuantity(id));
+  };
+
+  const handleDecrease = (id) => {
+    dispatch(decreaseQuantity(id));
+  };
 
   return (
-    <div className="container mt-4">
-      <div className="row">
-        {data.map(product => (
-          <Card key={product.id} product={product} />
+    <div className="container">
+      <div className="sticky-top bg-white p-3 shadow-sm totals-bar">
+        <h5>Total Quantity: {totalQuantity}</h5>
+        <h5>Total Amount: ${totalAmount}</h5>
+      </div>
+      <div className="row mt-5">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onIncrease={handleIncrease}
+            onDecrease={handleDecrease}
+          />
         ))}
       </div>
     </div>
