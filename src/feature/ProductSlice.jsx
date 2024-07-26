@@ -109,45 +109,42 @@ const productSlice = createSlice({
       state.status = "loading";
     },
     fetchProductSuccess: (state, action) => {
-      state.status = "success";
+      state.status = "Success";
       state.data = action.payload;
-      state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
-      state.totalAmount = action.payload.reduce((total, item) => total + item.price * item.quantity, 0);
     },
     fetchProductFailure: (state, action) => {
-      state.status = "failure";
+      state.status = "Failure";
       state.error = action.payload;
     },
     increaseQuantity: (state, action) => {
-      const product = state.data.find((item) => item.id === action.payload);
-      if (product && product.quantity < product.stock) {
-        product.quantity += 1;
-        state.totalQuantity += 1;
-        state.totalAmount += product.price;
+        const product = state.data.find((item) => item.id === action.payload);
+        if (product && product.quantity < product.stock) {
+          product.quantity += 1;
+          state.totalQuantity += 1;
+          state.totalAmount += product.price;
+        }
+      },
+      decreaseQuantity: (state, action) => {
+        const product = state.data.find((item) => item.id === action.payload);
+        if (product && product.quantity > 1) {
+          product.quantity -= 1;
+          state.totalQuantity -= 1;
+          state.totalAmount -= product.price;
+        }
+      },
+      updateTotals: (state) => {
+        // state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
+        // state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
       }
     },
-    decreaseQuantity: (state, action) => {
-      const product = state.data.find((item) => item.id === action.payload);
-      if (product && product.quantity > 1) {
-        product.quantity -= 1;
-        state.totalQuantity -= 1;
-        state.totalAmount -= product.price;
-      }
-    },
-    updateTotals: (state) => {
-      state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
-      state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
-    },
-  },
-});
-
-export const {
-  fetchProductStart,
-  fetchProductSuccess,
-  fetchProductFailure,
-  increaseQuantity,
-  decreaseQuantity,
-  updateTotals,
-} = productSlice.actions;
-
+  });
+  
+  export const {
+    fetchProductStart,
+    fetchProductSuccess,
+    fetchProductFailure,
+    increaseQuantity,
+    decreaseQuantity,
+    updateTotals,
+  } = productSlice.actions;
 export default productSlice.reducer;
