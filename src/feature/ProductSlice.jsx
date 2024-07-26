@@ -55,7 +55,7 @@ const productSlice = createSlice({
         stock: 36,
         brand: "Samsung",
         category: "smartphones",
-        thumbnail: "https://i.dummyjson.com/data/products/3/thumbnail.jpg",
+        thumbnail: "https://picsum.photos/200/300?random=3",
         images: ["https://i.dummyjson.com/data/products/3/1.jpg"],
         quantity: 1,
       },
@@ -69,7 +69,7 @@ const productSlice = createSlice({
         stock: 123,
         brand: "OPPO",
         category: "smartphones",
-        thumbnail: "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
+        thumbnail: "https://picsum.photos/200/300?random=4",
         images: [
           "https://i.dummyjson.com/data/products/4/1.jpg",
           "https://i.dummyjson.com/data/products/4/2.jpg",
@@ -90,7 +90,7 @@ const productSlice = createSlice({
         stock: 32,
         brand: "Huawei",
         category: "smartphones",
-        thumbnail: "https://i.dummyjson.com/data/products/5/thumbnail.jpg",
+        thumbnail: "https://picsum.photos/200/300?random=5",
         images: [
           "https://i.dummyjson.com/data/products/5/1.jpg",
           "https://i.dummyjson.com/data/products/5/2.jpg",
@@ -99,6 +99,8 @@ const productSlice = createSlice({
         quantity: 1,
       },
     ],
+    totalQuantity: 0,
+    totalAmount: 0,
     status: "idle",
     error: null,
   },
@@ -107,42 +109,45 @@ const productSlice = createSlice({
       state.status = "loading";
     },
     fetchProductSuccess: (state, action) => {
-      state.status = "Success";
+      state.status = "success";
       state.data = action.payload;
+      state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
+      state.totalAmount = action.payload.reduce((total, item) => total + item.price * item.quantity, 0);
     },
     fetchProductFailure: (state, action) => {
-      state.status = "Failure";
+      state.status = "failure";
       state.error = action.payload;
     },
     increaseQuantity: (state, action) => {
-        const product = state.data.find((item) => item.id === action.payload);
-        if (product && product.quantity < product.stock) {
-          product.quantity += 1;
-          state.totalQuantity += 1;
-          state.totalAmount += product.price;
-        }
-      },
-      decreaseQuantity: (state, action) => {
-        const product = state.data.find((item) => item.id === action.payload);
-        if (product && product.quantity > 1) {
-          product.quantity -= 1;
-          state.totalQuantity -= 1;
-          state.totalAmount -= product.price;
-        }
-      },
-      updateTotals: (state) => {
-        state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
-        state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
+      const product = state.data.find((item) => item.id === action.payload);
+      if (product && product.quantity < product.stock) {
+        product.quantity += 1;
+        state.totalQuantity += 1;
+        state.totalAmount += product.price;
       }
     },
-  });
-  
-  export const {
-    fetchProductStart,
-    fetchProductSuccess,
-    fetchProductFailure,
-    increaseQuantity,
-    decreaseQuantity,
-    updateTotals,
-  } = productSlice.actions;
+    decreaseQuantity: (state, action) => {
+      const product = state.data.find((item) => item.id === action.payload);
+      if (product && product.quantity > 1) {
+        product.quantity -= 1;
+        state.totalQuantity -= 1;
+        state.totalAmount -= product.price;
+      }
+    },
+    updateTotals: (state) => {
+      state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
+      state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
+    },
+  },
+});
+
+export const {
+  fetchProductStart,
+  fetchProductSuccess,
+  fetchProductFailure,
+  increaseQuantity,
+  decreaseQuantity,
+  updateTotals,
+} = productSlice.actions;
+
 export default productSlice.reducer;

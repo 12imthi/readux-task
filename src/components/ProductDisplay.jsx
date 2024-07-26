@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increaseQuantity, decreaseQuantity, updateTotals } from "../feature/ProductSlice";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import ProductCard from './ProductCard'; // Import the new ProductCard component
 
 const ProductDisplay = () => {
@@ -26,9 +26,9 @@ const ProductDisplay = () => {
     <div className="container">
       <div className="sticky-top bg-white p-3 shadow-sm totals-bar">
         <h5>Total Quantity: {totalQuantity}</h5>
-        <h5>Total Amount: ${totalAmount}</h5>
+        <h5>Total Amount: ${totalAmount.toFixed(2)}</h5>
       </div>
-      <div className="row mt-5">
+      <div className="row mt-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}
