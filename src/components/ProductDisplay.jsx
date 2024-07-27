@@ -10,8 +10,10 @@ const ProductDisplay = () => {
   const totalAmount = useSelector((state) => state.products.totalAmount);
   const dispatch = useDispatch();
 
+  // console.log("dispatch : ",dispatch);
+
   useEffect(() => {
-    dispatch(updateTotals());
+    // dispatch(updateTotals());
   }, [products, dispatch]);
 
   const handleIncrease = (id) => {

@@ -133,8 +133,8 @@ const productSlice = createSlice({
         }
       },
       updateTotals: (state) => {
-        // state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
-        // state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
+        state.totalQuantity = state.data.reduce((total, item) => total + item.quantity, 0);
+        state.totalAmount = state.data.reduce((total, item) => total + item.price * item.quantity, 0);
       }
     },
   });
