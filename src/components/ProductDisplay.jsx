@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increaseQuantity, decreaseQuantity, updateTotals } from "../feature/ProductSlice";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductCard from './ProductCard'; // Import the new ProductCard component
 
 const ProductDisplay = () => {
